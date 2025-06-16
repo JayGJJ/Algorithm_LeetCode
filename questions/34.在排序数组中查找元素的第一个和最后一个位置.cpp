@@ -1,3 +1,11 @@
+// @before-stub-for-debug-begin
+#include <vector>
+#include <string>
+#include "commoncppproblem34.h"
+
+using namespace std;
+// @before-stub-for-debug-end
+
 /*
  * @lc app=leetcode.cn id=34 lang=cpp
  *
@@ -6,33 +14,31 @@
 
 // @lc code=start
 #include <vector>
+#include <climits>
 using namespace std;
 class Solution {
-public://代码复用
-    int binarySearch(vector<int>& nums, int target,bool flag){
-        int l = -1;
-        int r = nums.size();
-        while (l+1<r)
-        {
-            int mid = (l+r)/2;
-            int num = nums[mid];
-            if (num<target||(flag&&num<=target))
-            {//若flag为true，则范围为大于等于target,否则为大于target
-                l = mid;
-            }else{
-                r = mid;
-            }
-        }
-        return r;//返回大于(等于)target的第一个下标
-    }   
+public:
     vector<int> searchRange(vector<int>& nums, int target) {
-        int l = binarySearch(nums,target,false);//target的第一个下标
-        int r = binarySearch(nums,target,true)-1;//target的最后一个下标
-        if (l<=r)
-        {//校验下标是否合法，若数组为空或不存在目标元素时，可能存在l>r
-            return {l,r};
+        vector<int> ans={INT_MAX,INT_MIN};
+        int n = nums.size(),mid = 0;
+        int left1=0,right1=n-1;//采用两次二分法
+        int left2=0,right2=n-1;
+        while(left1<=right1){
+            mid = (left1+right1)/2;
+            if(nums[mid]==target && mid<ans[0])ans[0]=mid;
+            if(nums[mid]<target)left1 = mid+1;
+            else right1 = mid-1;
         }
-        return {-1,-1};
+        while(left2<=right2){
+            mid = (left2+right2)/2;
+            if(nums[mid]==target && mid>ans[1])ans[1]=mid;
+            if(nums[mid]>target)right2 = mid-1;
+            else left2 = mid+1;
+        }
+        if(ans[0]==INT_MAX && ans[1]==INT_MIN){
+            ans[0] = ans[1] = -1;
+        }
+        return ans;
     }
 };
 // @lc code=end
